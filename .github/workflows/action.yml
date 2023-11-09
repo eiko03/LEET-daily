@@ -6,12 +6,12 @@ on:
       - master
 
 jobs:
-  Validate json and zip:
+  Validate-json-and-zip:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
 
-      - name: Validate manifest.json of the extension
+      - name: Validate_manifest.json_of_the_extension
         uses: cardinalby/schema-validator-action@v1
         with:
           file: ${{ env.EXTENSION_DIR }}manifest.json
