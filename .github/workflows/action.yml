@@ -1,19 +1,28 @@
-name: "Build, test and pack WebExtension"
+name: release
 
 on:
   push:
-    branches:
-      - master
+    tags:
+      - '*'
 
 jobs:
-  Validate-json-and-zip:
+  build_release:
+    name: build_release
     runs-on: ubuntu-latest
-    timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v3
+      - name: checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
 
-      - name: Pack directory to zip
+      - id: packExtensionDir
         uses: cardinalby/webext-buildtools-pack-extension-dir-action@v1
         with:
-          extensionDir: ${{ secrets.EXTENSION_DIR }}
-          zipFilePath: ${{ secrets.ZIP_FILE_PATH }}
+          extensionDir: 'extension'
+          zipFilePath: 'build/extension.zip'
+
+      - uses: cardinalby/webext-buildtools-chrome-crx-action@v2
+        with:
+          zipFilePath: 'build/extension.zip'
+          crxFilePath: 'build/extension.crx'
+          privateKey: ${{ secrets.CHROME_CRX_PRIVATE_KEY }}
