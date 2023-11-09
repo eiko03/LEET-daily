@@ -30,6 +30,7 @@ function redirect(uri = null){
     chrome.tabs.query(
         {currentWindow: true, active : true},
         function(tabId){
+            try{tabId[0].url;} catch(e){redirect(uri);}
 
             if(tabId[0].url.match(regex)){
                 console.log(1);
@@ -158,11 +159,11 @@ function save_leet_problem_question_list(value){
 
 async function search_cookies(){
 
-    chrome.cookies.get({ url: url.BASE_URL, name: cookie_data.SESSION },
+    await chrome.cookies.get({ url: url.BASE_URL, name: cookie_data.SESSION },
         async function (cookie) {
             if (cookie) {
                 await save_cookies_session(cookie.value)
-                chrome.cookies.get({ url: url.BASE_URL, name: cookie_data.CSRF },
+                await chrome.cookies.get({ url: url.BASE_URL, name: cookie_data.CSRF },
                      async function (cookie) {
                         if (cookie) {
                             await save_cookies_csrf(cookie.value);
@@ -242,6 +243,7 @@ async function get_leet_problem_question_list(csrf, session){
     }
     catch(e){
         console.log("error "+e)
+        await get_leet_problem_question_list(csrf, session)
     }
 
 }
@@ -260,6 +262,7 @@ async function get_leet_user_progress_list(csrf, session){
     }
     catch(e){
         console.log("error "+e)
+        await get_leet_user_progress_list(csrf, session)
     }
 
 }
@@ -270,7 +273,7 @@ async function get_leet_user_globaldata(csrf, session){
         fetch(url.API_URL, {
             method: methods.post,
             headers: header(csrf, session),
-            body: body(query.leet_user_globaldata_query)
+            body: body(query.user_globaldata_query)
         })
             .then((res) => res.json())
             .then((result) =>
@@ -279,6 +282,7 @@ async function get_leet_user_globaldata(csrf, session){
     }
     catch(e){
         console.log("error "+e)
+        await get_leet_user_globaldata(csrf, session)
     }
 
 }
@@ -298,6 +302,7 @@ async function get_leet_user_problems_solved(csrf, session){
     }
     catch(e){
         console.log("error "+e)
+        await get_leet_user_problems_solved(csrf, session);
     }
 
 }
