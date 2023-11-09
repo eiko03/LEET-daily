@@ -5,13 +5,8 @@ on:
     branches:
       - master
 
-inputs:
-  doNotPackZip:
-    description: 'Set `true` to omit pack step'
-    required: false
-
 jobs:
-  Generate-snake:
+  Validate json and zip:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
