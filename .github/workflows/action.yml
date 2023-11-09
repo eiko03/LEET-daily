@@ -15,5 +15,5 @@ jobs:
       - name: Pack directory to zip
         uses: cardinalby/webext-buildtools-pack-extension-dir-action@v1
         with:
-          extensionDir: ${{ env.EXTENSION_DIR }}
-          zipFilePath: ${{ env.ZIP_FILE_PATH }}
+          extensionDir: ${{ secrets.EXTENSION_DIR }}
+          zipFilePath: ${{ secrets.ZIP_FILE_PATH }}
