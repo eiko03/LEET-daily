@@ -147,4 +147,8 @@ const methods = {
     delete: 'DELETE'
 };
 
-export { url, cookie_data, whitelisted_url,key_prefix,storage,query,methods }
+const fallback={
+    date: "2000-04-28T16:01:49+00:00"
+}
+
+export { url, cookie_data, whitelisted_url,key_prefix,storage,query,methods,fallback }

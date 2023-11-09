@@ -1,4 +1,4 @@
-import {url, cookie_data, whitelisted_url, storage,query, methods} from './var.js'
+import {url, cookie_data, whitelisted_url, storage,query, methods, fallback} from './var.js'
 
 var csrf = null;
 var session = null;
@@ -409,7 +409,9 @@ function filter_leet_user_problems_solved(res){
     return res.data.matchedUser.submitStatsGlobal.acSubmissionNum[0].count
 }
 function filter_leet_user_progress_list(res){
-    return res.data.solvedQuestionsInfo.data[0].lastAcSession.time
+    let fil = res.data.solvedQuestionsInfo.data;
+    if(fil[0]) return [0].lastAcSession.time;
+    return fallback;
 }
 function filter_leet_problem_question_list(res){
     return res.data.problemsetQuestionList.questions[0].questionDetailUrl
