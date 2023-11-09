@@ -1,26 +1,21 @@
 {
   "name": "Leet Daily",
   "version": "1.0.0",
-  "description": "Daily Leet code before any entertainment",
+  "description": "This will force you to solve daily a unsolved(by you) leetcode problem before visiting any other website",
   "manifest_version": 3,
   "author": "Tipu Sultan Eiko",
   "action":{
     "default_popup": "index.html",
     "default_title": "Leet Daily"
   },
+  "options_ui": {
+    "page": "option/options.html",
+    "open_in_tab": false
+  },
   "content_security_policy": {
     "script-src": "self",
     "object-src": "self"
   },
-  "content_scripts": [
-    {
-      "matches": ["http://*/*", "https://*/*"],
-      "js": ["js/cookie_handler.js"],
-      "exclude_matches": [
-        "*://*.leetcode.com/*"
-      ]
-    }
-  ],
   "background": {
     "service_worker": "js/background.js",
     "type": "module"
@@ -31,7 +26,8 @@
     "history",
     "webNavigation",
     "scripting",
-    "storage"
+    "storage",
+    "contextMenus"
   ],
   "host_permissions": [
     "*://*.leetcode.com/*",

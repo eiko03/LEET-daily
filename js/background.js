@@ -8,40 +8,102 @@ var time = null;
 var question = null;
 var current_utc_date = null;
 var last_submit_utc_date = null;
+var active = true;
 
 
 
 chrome.webNavigation.onCompleted.addListener(async (e) => {
+    await get_whitelist_url().then(data=>{
+        let reg=whitelisted_url.REGEX;
+        if(typeof data.whitelist_url !== 'undefined')
+            reg=whitelisted_url.REGEX+data.whitelist_url;
 
-    await search_cookies();
+        var regex = new RegExp(reg);
+
+        chrome.tabs.query(
+            {currentWindow: true, active : true},
+            async function(tabId){
+
+                try{
+                    if(tabId[0].url.match(regex)){
+                        console.log(1);
+                    }
+                    else {
+                        await get_plugin_status().then(async (data)=>{
+                            if(data.plugin_status === true){
+                                await search_cookies();
+                            }
+                        });
+
+                    }
+                }
+                catch (e){
+                    console.log(e);
+                }
+
+            }
+        )
+
+
+    });
+
+
+
 
 });
+
+
+
+
+
+// chrome.runtime.onConnect.addListener(function (port) {
+//     port.onMessage.addListener(function (request) {
+//         if (request.cmd === "shutdown") {
+//             console.log('ss');
+//         }
+//     });
+// });
+
+// chrome.runtime.onMessage.addListener(
+//     function(request, sender, sendResponse){
+//         if(request.msg == "startFunc") console.log("111");
+//     }
+// );
+
 
 /**
  *  helper
  *
  */
 
-function redirect(uri = null){
+async function redirect(uri = null){
+    await get_whitelist_url().then(data=>{
 
-    var regex = new RegExp(whitelisted_url.REGEX);
+        let reg=whitelisted_url.REGEX;
+        if(typeof data.whitelist_url !== 'undefined')
+            reg=whitelisted_url.REGEX+data.whitelist_url;
+
+        var regex = new RegExp(reg);
 
 
-    chrome.tabs.query(
-        {currentWindow: true, active : true},
-        function(tabId){
-            try{tabId[0].url;} catch(e){redirect(uri);}
+        chrome.tabs.query(
+            {currentWindow: true, active : true},
+            function(tabId){
+                try{tabId[0].url;} catch(e){uri ? redirect(uri): redirect();}
 
-            if(tabId[0].url.match(regex)){
-                console.log(1);
+                if(tabId[0].url.match(regex)){
+                    console.log(1);
+                }
+                else {
+
+                    chrome.tabs.update(tabId[0].id, {url: (uri)?(url.BASE_URL+uri) : (url.LOGIN_URL)});
+                }
+
             }
-            else {
+        )
+    });
 
-                chrome.tabs.update(tabId[0].id, {url: (uri)?(url.BASE_URL+uri) : (url.LOGIN_URL)});
-            }
 
-        }
-    )
 }
 
 function compareTwoDates(d1, d2) {
@@ -54,7 +116,15 @@ function compareTwoDates(d1, d2) {
  * getter of localstorage
  *
  */
+function get_whitelist_url() {
 
+    return  chrome.storage.local.get('whitelist_url');
+
+}
+function get_plugin_status() {
+
+    return chrome.storage.local.get('plugin_status');
+}
 function get_gookies_session() {
 
     return storage.get(cookie_data.SESSION);
@@ -201,7 +271,7 @@ async function search_cookies(){
                                 await get_leet_problem_question_list();
                                 question = await get_local_leet_problem_question_list();
 
-                                redirect(question.question);
+                                await redirect(question.question);
                             } else {
                                 console.log(`thanks for submit today`);
                             }
@@ -211,12 +281,12 @@ async function search_cookies(){
 
 
                         } else
-                            redirect()
+                            await redirect()
                     });
 
             }
             else
-                redirect()
+                await redirect()
 
         });
 }
