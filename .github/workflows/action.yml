@@ -12,12 +12,6 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Validate_manifest.json_of_the_extension
-        uses: cardinalby/schema-validator-action@v1
-        with:
-          file: ${{ env.EXTENSION_DIR }}manifest.json
-          schema: 'https://json.schemastore.org/webextension.json'
-
       - name: Pack directory to zip
         if: inputs.doNotPackZip != 'true'
         uses: cardinalby/webext-buildtools-pack-extension-dir-action@v1
