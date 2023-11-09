@@ -10,6 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
+      - uses: actions/checkout@v3
 
       - name: Validate_manifest.json_of_the_extension
         uses: cardinalby/schema-validator-action@v1
