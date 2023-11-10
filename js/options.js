@@ -1,6 +1,8 @@
 var btn = document.getElementById("whitelist_btn");
 var btn_delete = document.getElementById("whitelist_delete_btn");
-
+/**
+ * whitelist url add or delete on save
+ */
 btn.addEventListener('click', async function() {
 
     var lines =document.getElementById("whitelist").value.split('\n');

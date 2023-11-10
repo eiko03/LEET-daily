@@ -1,20 +1,14 @@
 
 
-// var port = chrome.runtime.connect({name: "script_to_background"});
-// port.onMessage.addListener(function (answer) { /* your code */ });
-// port.postMessage({cmd: "shutdown"});
-
-
-
 var checkbox = document.getElementById("switch");
-
+/**
+ * switch on/off functionalities
+ */
 checkbox.addEventListener('change', function() {
     if (this.checked) {
-        console.log("Checkbox is checked..");
         save_plugin_status(true);
     } else {
         save_plugin_status(false);
-        console.log("Checkbox is not checked..");
     }
 });
 
@@ -22,6 +16,9 @@ checkbox.addEventListener('change', function() {
 
 
 async function run () {
+    /**
+     * change switch value based on localstorage
+     */
     await get_plugin_status().then(async (data) => {
 
         if (typeof data.plugin_status === 'undefined') {
@@ -35,11 +32,16 @@ async function run () {
 
     });
 
-
+    /**
+     * get and set username to popup
+     */
     await get_local_leet_user_globaldata().then(async (data) => {
         if (typeof data.username !== 'undefined')
             set_username(data.username)
     });
+    /**
+     * get and set last submit time to popup
+     */
 
     await get_local_leet_user_progress_list().then(async (data) => {
         if (typeof data.time !== 'undefined'){
@@ -53,10 +55,6 @@ async function run () {
     });
 
 
-    await get_local_leet_problems_solved().then(async (data) => {
-        if (typeof data.solved !== 'undefined')
-            set_solved(data.solved)
-    });
 
 }
 function flip_main_switch(val){
@@ -65,9 +63,6 @@ function flip_main_switch(val){
 
 function set_username(val){
     document.getElementById("username").value = val
-}
-function set_solved(val){
-    document.getElementById("solved").value = val
 }
 function solved_today(val){
     document.getElementById("today").value = val
@@ -103,11 +98,6 @@ function get_local_leet_user_progress_list() {
 
 }
 
-function get_local_leet_problems_solved() {
-
-    return  chrome.storage.local.get('solved');
-
-}
 
 
 run();

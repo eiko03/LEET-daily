@@ -1,3 +1,7 @@
+/**
+ * common uncommon variable, graphql queries, api endpoint etc stored here
+ * @type {{API_URL: string, LOGIN_URL: string, BASE_URL: string}}
+ */
 var url ={
     BASE_URL: 'https://leetcode.com',
     LOGIN_URL: 'https://leetcode.com/accounts/login/',

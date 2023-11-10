@@ -6,14 +6,23 @@ var username = null;
 var solved = 0;
 var time = null;
 var question = null;
-var current_utc_date = null;
-var last_submit_utc_date = null;
-var active = true;
 
-
-
+/**
+ * this is the startpoint of this plugin
+ * it redirects user on web navigation
+ * here is a predefined whitelist urls in regex form,
+ * it adds that with user defined whitelist urls\
+ * it also checks if the plugin status is active
+ * before redirecting
+ *
+ */
 chrome.webNavigation.onCompleted.addListener(async (e) => {
     await get_whitelist_url().then(data=>{
+
+        /**
+         * predefined and user defined whitelisted urls in regex
+         * @type {string}
+         */
         let reg=whitelisted_url.REGEX;
         if(typeof data.whitelist_url !== 'undefined')
             reg=whitelisted_url.REGEX+data.whitelist_url;
@@ -26,11 +35,17 @@ chrome.webNavigation.onCompleted.addListener(async (e) => {
 
                 try{
                     if(tabId[0].url.match(regex)){
-                        console.log(1);
+                        /**
+                         * whitelisted url visit
+                         */
+                        console.log("whitelisted url");
                     }
                     else {
                         await get_plugin_status().then(async (data)=>{
                             if(data.plugin_status === true){
+                                /**
+                                 * plugin status check
+                                 */
                                 await search_cookies();
                             }
                         });
@@ -55,28 +70,17 @@ chrome.webNavigation.onCompleted.addListener(async (e) => {
 
 
 
-
-// chrome.runtime.onConnect.addListener(function (port) {
-//     port.onMessage.addListener(function (request) {
-//         if (request.cmd === "shutdown") {
-//             console.log('ss');
-//         }
-//     });
-// });
-
-// chrome.runtime.onMessage.addListener(
-//     function(request, sender, sendResponse){
-//         if(request.msg == "startFunc") console.log("111");
-//     }
-// );
-
-
 /**
  *  helper
  *
  */
 
 async function redirect(uri = null){
+    /**
+     * similar to redirector of webnavigation
+     * but it doesn't check plugin status
+     * and it works on the end of lifecycle of this plugin
+     */
     await get_whitelist_url().then(data=>{
 
         let reg=whitelisted_url.REGEX;
@@ -92,11 +96,11 @@ async function redirect(uri = null){
                 try{tabId[0].url;} catch(e){uri ? redirect(uri): redirect();}
 
                 if(tabId[0].url.match(regex)){
-                    console.log(1);
+                    console.log("whitelisted url");
                 }
                 else {
 
-                    chrome.tabs.update(tabId[0].id, {url: (uri)?(url.BASE_URL+uri) : (url.LOGIN_URL)});
+                    chrome.tabs.update(tabId[0].id, {url: (uri!==null)?(url.BASE_URL+uri) : (url.LOGIN_URL)});
                 }
 
             }
@@ -228,6 +232,9 @@ function save_leet_problem_question_list(value){
 
 
 async function search_cookies(){
+    /**
+     * get leet code session and csrf token for future graphql request authentication
+     */
 
     await chrome.cookies.get({ url: url.BASE_URL, name: cookie_data.SESSION },
         async function (cookie) {
@@ -244,6 +251,9 @@ async function search_cookies(){
                             if(!csrf)
                                 csrf=await get_gookies_csrf();
 
+                            /**
+                             * get user leetcode username for future api call and display on popup
+                             */
                             if(!username){
                                 await get_leet_user_globaldata(csrf.csrftoken[0].val, session.LEETCODE_SESSION[0].val);
                                 username = await get_local_leet_user_globaldata();
@@ -251,6 +261,9 @@ async function search_cookies(){
 
 
 
+                            /**
+                             * get user's last solved problem on leetcode
+                             */
                             await get_leet_user_progress_list(csrf.csrftoken[0].val, session.LEETCODE_SESSION[0].val);
                             time = await get_local_leet_user_progress_list();
                             const now = new Date();
@@ -259,34 +272,43 @@ async function search_cookies(){
                             let datesComparisonResult = compareTwoDates(time.time.split("T")[0], now.getUTCFullYear() +"-"+(now.getUTCMonth() +1) +"-"+now.getUTCDate());
 
                             if (datesComparisonResult > 0) {
-                                console.log(`how did you submit tomorrow!`);
+                                console.log(`how did you solve tomorrow!`);
                             } else if (datesComparisonResult < 0) {
-                                console.log(`you submitted yesterday`);
 
+                                console.log(`you didn't solve a leetcode toady`);
+
+                                /**
+                                 * get total solved problems
+                                 */
                                 if(!solved){
                                     await get_leet_user_problems_solved(csrf.csrftoken[0].val, session.LEETCODE_SESSION[0].val);
                                     solved = await get_local_leet_problems_solved();
                                 }
 
-
+                                /**
+                                 * get a unsolved problem by user
+                                 */
                                 await get_leet_problem_question_list(csrf.csrftoken[0].val, session.LEETCODE_SESSION[0].val);
                                 question = await get_local_leet_problem_question_list();
 
-
+                                /**
+                                 * redirect user to the random problem
+                                 */
                                 await redirect(question.question);
+
                             } else {
-                                console.log(`thanks for submit today`);
+                                console.log(`thanks for solving a leetcode today`);
                             }
 
 
 
 
-                        } else
+                        } else //redirect to login page because user is not logged in
                             await redirect()
                     });
 
             }
-            else
+            else //redirect to login page because user is not logged in
                 await redirect()
 
         });
