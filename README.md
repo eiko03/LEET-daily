@@ -16,3 +16,7 @@ It redirects you to a random leetcode problem (which is not solved by you yet) e
 
 - Option to filter out premium leetcode problems from serving for those who are broke like me.
 - Option to choose more then one problem serving daily for those extremists problem solver.
+
+## Instructions for dummies
+- Download the `extension.crx` from the latest release listed [here](https://github.com/eiko03/LEET-daily/releases)
+- Install the `extension.crx` file in you chrome. see  how in [here](https://unscart.com/crx-file/)
