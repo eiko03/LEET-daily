@@ -410,7 +410,7 @@ function filter_leet_user_problems_solved(res){
 }
 function filter_leet_user_progress_list(res){
     let fil = res.data.solvedQuestionsInfo.data;
-    if(fil[0]) return [0].lastAcSession.time;
+    if(fil[0]) return fil[0].lastAcSession.time;
     return fallback;
 }
 function filter_leet_problem_question_list(res){
