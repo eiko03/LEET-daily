@@ -168,8 +168,8 @@ function get_local_leet_problem_question_list() {
 
 function save_cookies_session(value){
 
-    storage.remove('LEETCODE_SESSION',function() {
-        storage.set({
+    storage.remove('LEETCODE_SESSION',async function() {
+        await storage.set({
             'LEETCODE_SESSION' : [{
                 val: value
             }]
@@ -180,8 +180,8 @@ function save_cookies_session(value){
 }
 
 function save_cookies_csrf(value){
-    storage.remove('csrftoken',function() {
-        storage.set({
+    storage.remove('csrftoken',async function() {
+        await storage.set({
             'csrftoken': [{
                 val: value,
             }]
@@ -190,31 +190,31 @@ function save_cookies_csrf(value){
 }
 
 function save_leet_user_globaldata(value){
-    storage.remove('username',function() {
-        storage.set({
+    storage.remove('username',async function() {
+        await storage.set({
             'username': value
         });
     });
 }
 
 function save_leet_user_problems_solved(value){
-    storage.remove('solved',function() {
-        storage.set({
+    storage.remove('solved',async function() {
+        await storage.set({
             'solved': value
         });
     });
 }
 
 function save_leet_user_progress_list(value){
-    storage.remove('time',function() {
-        storage.set({
+    storage.remove('time',async function() {
+        await storage.set({
             'time': value
         });
     });
 }
 function save_leet_problem_question_list(value){
-    storage.remove('question',function() {
-        storage.set({
+    storage.remove('question',async function() {
+        await storage.set({
             'question': value
         });
     });
