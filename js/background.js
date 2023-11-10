@@ -256,7 +256,7 @@ async function search_cookies(){
                             const now = new Date();
 
 
-                            let datesComparisonResult = compareTwoDates(time.time.split("t")[0], now.getUTCFullYear() +"-"+(now.getUTCMonth() +1) +"-"+now.getUTCDate());
+                            let datesComparisonResult = compareTwoDates(time.time.split("T")[0], now.getUTCFullYear() +"-"+(now.getUTCMonth() +1) +"-"+now.getUTCDate());
 
                             if (datesComparisonResult > 0) {
                                 console.log(`how did you submit tomorrow!`);
