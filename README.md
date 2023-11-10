@@ -1,5 +1,5 @@
 # LEET DAILY
-
+![auto_generate_crx](https://github.com/eiko03/LEET-daily/actions/workflows/action.yml/badge.svg)
 
 #### Forces you solve a leetcode problem daily
 
