@@ -3,7 +3,7 @@ import {url, cookie_data, whitelisted_url, storage,query, methods, fallback} fro
 var csrf = null;
 var session = null;
 var username = null;
-var solved = null;
+var solved = 0;
 var time = null;
 var question = null;
 var current_utc_date = null;
@@ -267,16 +267,17 @@ async function search_cookies(){
                                     await get_leet_user_problems_solved(csrf.csrftoken[0].val, session.LEETCODE_SESSION[0].val);
                                     solved = await get_local_leet_problems_solved();
                                 }
+                                if(Number.isInteger(solved.solved)) {
 
-                                await get_leet_problem_question_list();
-                                question = await get_local_leet_problem_question_list();
-
-                                await redirect(question.question);
+                                    await get_leet_problem_question_list();
+                                    question = await get_local_leet_problem_question_list();
+                                }
+                                if(question.question)
+                                    await redirect(question.question);
                             } else {
                                 console.log(`thanks for submit today`);
                             }
 
-                            console.log(question);
 
 
 
@@ -299,22 +300,25 @@ async function search_cookies(){
 
 
 async function get_leet_problem_question_list(csrf, session){
-    let variable = query.leet_problem_question_list_vr.replace(`"skip": 0`,`"skip": `+(Math.floor(Math.random() *(2860-solved.solved))))
-    try{
-        fetch(url.API_URL, {
-            method: methods.post,
-            headers: header(csrf, session),
-            body: body(query.leet_problem_question_list, variable)
-        })
-            .then((res) => res.json())
-            .then((result) =>
-                save_leet_problem_question_list(filter_leet_problem_question_list(result))
-            );
+
+        let variable = query.leet_problem_question_list_vr.replace(`"skip": 0`,`"skip": `+(Math.floor(Math.random() *(2860-solved.solved))))
+        try{
+            fetch(url.API_URL, {
+                method: methods.post,
+                headers: header(csrf, session),
+                body: body(query.leet_problem_question_list, variable)
+            })
+                .then((res) => res.json())
+                .then((result) =>
+                    save_leet_problem_question_list(filter_leet_problem_question_list(result))
+                );
+        }
+        catch(e){
+            console.log("error "+e)
+            await get_leet_problem_question_list(csrf, session)
+
     }
-    catch(e){
-        console.log("error "+e)
-        await get_leet_problem_question_list(csrf, session)
-    }
+
 
 }
 async function get_leet_user_progress_list(csrf, session){
