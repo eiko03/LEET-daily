@@ -1,12 +1,12 @@
 {
-  "name": "Leet Daily",
+  "name": "LEET-daily",
   "version": "1.0.0",
   "description": "This will force you to solve daily a unsolved(by you) leetcode problem before visiting any other website",
   "manifest_version": 3,
   "author": "Tipu Sultan Eiko",
   "action":{
     "default_popup": "index.html",
-    "default_title": "Leet Daily"
+    "default_title": "LEET-daily"
   },
   "options_ui": {
     "page": "option/options.html",
