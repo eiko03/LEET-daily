@@ -267,13 +267,13 @@ async function search_cookies(){
                                     await get_leet_user_problems_solved(csrf.csrftoken[0].val, session.LEETCODE_SESSION[0].val);
                                     solved = await get_local_leet_problems_solved();
                                 }
-                                if(Number.isInteger(solved.solved)) {
 
-                                    await get_leet_problem_question_list();
-                                    question = await get_local_leet_problem_question_list();
-                                }
-                                if(question.question)
-                                    await redirect(question.question);
+
+                                await get_leet_problem_question_list(csrf.csrftoken[0].val, session.LEETCODE_SESSION[0].val);
+                                question = await get_local_leet_problem_question_list();
+
+
+                                await redirect(question.question);
                             } else {
                                 console.log(`thanks for submit today`);
                             }
@@ -300,8 +300,11 @@ async function search_cookies(){
 
 
 async function get_leet_problem_question_list(csrf, session){
-
-        let variable = query.leet_problem_question_list_vr.replace(`"skip": 0`,`"skip": `+(Math.floor(Math.random() *(2860-solved.solved))))
+        let variable;
+        if(Number.isInteger(solved.solved))
+            variable = query.leet_problem_question_list_vr.replace(`"skip": 0`,`"skip": `+(Math.floor(Math.random() *(2860-solved.solved))))
+        else
+            variable = query.leet_problem_question_list_vr.replace(`"skip": 0`,`"skip": `+(Math.floor(Math.random() *(1860))))
         try{
             fetch(url.API_URL, {
                 method: methods.post,
